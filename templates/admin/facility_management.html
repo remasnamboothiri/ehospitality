@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Facility Management{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-hospital-alt"></i> Facility Management</h2>
+
+<div class="mb-3">
+    <a href="{% url 'admin:add_facility' %}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Add New Facility
+    </a>
+</div>
+
+<div class="row">
+    {% for facility in facilities %}
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">{{ facility.name }}</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Location:</strong> {{ facility.location }}</p>
+                <p><strong>Address:</strong> {{ facility.address }}</p>
+                <p><strong>Phone:</strong> {{ facility.phone }}</p>
+                <p><strong>Email:</strong> {{ facility.email }}</p>
+                <p><strong>Capacity:</strong> {{ facility.capacity }} beds</p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p class="text-center text-muted">No facilities found</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

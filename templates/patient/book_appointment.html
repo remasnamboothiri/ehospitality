@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Book Appointment{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-calendar-plus"></i> Book New Appointment</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Appointment Details</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Book Appointment
+                    </button>
+                    <a href="{% url 'patient:dashboard' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Instructions</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> Select your preferred doctor</li>
+                    <li><i class="fas fa-check text-success"></i> Choose date and time</li>
+                    <li><i class="fas fa-check text-success"></i> Provide reason for visit</li>
+                    <li><i class="fas fa-check text-success"></i> You'll receive confirmation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

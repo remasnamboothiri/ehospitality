@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Billing{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-file-invoice-dollar"></i> Billing & Payments</h2>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for billing in billings %}
+                <tr>
+                    <td>{{ billing.invoice_number }}</td>
+                    <td>{{ billing.created_at|date:"M d, Y" }}</td>
+                    <td>${{ billing.amount }}</td>
+                    <td>
+                        <span class="badge bg-{% if billing.payment_status == 'paid' %}success{% elif billing.payment_status == 'pending' %}warning{% else %}secondary{% endif %}">
+                            {{ billing.get_payment_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="viewInvoice({{ billing.id }})">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        {% if billing.payment_status == 'pending' %}
+                        <button class="btn btn-sm btn-success" onclick="payBill({{ billing.id }})">
+                            <i class="fas fa-credit-card"></i> Pay
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No billing records found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function viewInvoice(id) {
+    alert('View invoice functionality - ID: ' + id);
+}
+
+function payBill(id) {
+    if(confirm('Proceed to payment?')) {
+        alert('Payment gateway integration - ID: ' + id);
+    }
+}
+</script>
+{% endblock %}

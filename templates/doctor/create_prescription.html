@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Prescription{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-prescription"></i> Create Prescription</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Prescription Details</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Patient:</strong> {{ appointment.patient.get_full_name }}</p>
+                <p><strong>Appointment Date:</strong> {{ appointment.appointment_date }}</p>
+                <hr>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Create Prescription
+                    </button>
+                    <a href="{% url 'doctor:appointments' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <ul class="small">
+                    <li>Check for drug interactions</li>
+                    <li>Verify patient allergies</li>
+                    <li>Provide clear instructions</li>
+                    <li>Specify exact dosage</li>
+                    <li>Define treatment duration</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Health Education{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-graduation-cap"></i> Health Education Resources</h2>
+
+<div class="row">
+    {% for article in articles %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if article.image %}
+            <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ article.title }}</h5>
+                <p class="card-text">{{ article.content|truncatewords:30 }}</p>
+                <span class="badge bg-info">{{ article.category }}</span>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Published: {{ article.created_at|date:"M d, Y" }}</small>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p class="text-center text-muted">No articles available at the moment</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
