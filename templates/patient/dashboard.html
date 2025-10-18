@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-tachometer-alt"></i> Patient Dashboard</h2>
+<p class="text-muted">Welcome back, {{ user.first_name }}!</p>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5><i class="fas fa-calendar-check"></i> My Appointments</h5>
+                <h3>{{ appointments.count }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5><i class="fas fa-file-medical"></i> Medical Records</h5>
+                <h3>Active</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h5><i class="fas fa-file-invoice-dollar"></i> Pending Bills</h5>
+                <h3>{{ billings.count }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h5><i class="fas fa-book-medical"></i> Resources</h5>
+                <h3>Available</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="{% url 'patient:book_appointment' %}" class="btn btn-primary mb-2 w-100">
+                    <i class="fas fa-calendar-plus"></i> Book Appointment
+                </a>
+                <a href="{% url 'patient:medical_history' %}" class="btn btn-info mb-2 w-100">
+                    <i class="fas fa-file-medical"></i> View Medical History
+                </a>
+                <a href="{% url 'patient:billing' %}" class="btn btn-warning mb-2 w-100">
+                    <i class="fas fa-file-invoice"></i> View Billing
+                </a>
+                <a href="{% url 'patient:health_education' %}" class="btn btn-success w-100">
+                    <i class="fas fa-graduation-cap"></i> Health Education
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Upcoming Appointments</h5>
+            </div>
+            <div class="card-body">
+                {% if appointments %}
+                    <ul class="list-group">
+                        {% for appointment in appointments %}
+                            <li class="list-group-item">
+                                <strong>Dr. {{ appointment.doctor.get_full_name }}</strong><br>
+                                <small>{{ appointment.appointment_date }} at {{ appointment.appointment_time }}</small><br>
+                                <span class="badge bg-info">{{ appointment.status }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No upcoming appointments</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

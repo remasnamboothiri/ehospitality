@@ -1,26 +1,12 @@
 from django.contrib import admin
+from .models import Facility, Department
 
-# Register your models here.
+@admin.register(Facility)
+class FacilityAdmin(admin.ModelAdmin):
+    list_display = ['name', 'location', 'capacity']
+    search_fields = ['name', 'location']
 
-from django.contrib import admin
-from .models import Appointment, MedicalHistory, Billing, HealthEducation, Facility , Department
-
-@admin.register(Appointment)
-class AppointmentAdmin(admin.ModelAdmin):
-    list_display = ['patient', 'doctor', 'appointment_date', 'appointment_time', 'status']
-    list_filter = ['status', 'appointment_date']
-    search_fields = ['patient__username', 'doctor__username']
-
-@admin.register(MedicalHistory)
-class MedicalHistoryAdmin(admin.ModelAdmin):
-    list_display = ['patient', 'diagnosis', 'date_recorded']
-    search_fields = ['patient__username', 'diagnosis']
-
-@admin.register(Billing)
-class BillingAdmin(admin.ModelAdmin):
-    list_display = ['invoice_number', 'patient', 'amount', 'payment_status']
-    list_filter = ['payment_status']
-
-@admin.register(HealthEducation)
-class HealthEducationAdmin(admin.ModelAdmin):
-    list_display = ['title', 'category', 'created_at']
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ['name', 'facility', 'head_of_department']
+    list_filter = ['facility']

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from patient_module.models import Appointment, MedicalHistory
 from .models import Prescription, DoctorSchedule, TreatmentPlan
-from .forms import PrescriptionForm, DoctorScheduleForm, TreatmentPlanForm
+from .forms import PrescriptionForm, DoctorScheduleForm, TreatmentPlanForm , MedicalHistoryForm
 
 @login_required
 def doctor_dashboard(request):
@@ -139,3 +139,30 @@ def create_treatment_plan(request, patient_id):
         form = TreatmentPlanForm()
     
     return render(request, 'doctor/create_treatment_plan.html', {'form': form, 'patient': patient})
+
+
+
+@login_required
+def add_medical_history(request, patient_id):
+    if request.user.user_type != 'doctor':
+        return redirect('core:home')
+    
+    from core.models import User
+    patient = get_object_or_404(User, id=patient_id)
+    
+    if request.method == 'POST':
+        form = MedicalHistoryForm(request.POST)
+        if form.is_valid():
+            history = form.save(commit=False)
+            history.patient = patient
+            history.recorded_by = request.user  # The doctor who's logged in
+            history.save()
+            messages.success(request, 'Medical history added successfully')
+            return redirect('doctor:patient_detail', patient_id=patient.id)
+    else:
+        form = MedicalHistoryForm()
+    
+    return render(request, 'doctor/add_medical_history.html', {
+        'form': form, 
+        'patient': patient
+    })

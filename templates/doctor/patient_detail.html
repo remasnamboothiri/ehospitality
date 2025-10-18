@@ -25,6 +25,12 @@
                 <h5 class="mb-0">Quick Actions</h5>
             </div>
             <div class="card-body">
+
+                <!-- THIS IS THE NEW BUTTON I ADDED -->
+                <a href="{% url 'doctor:add_medical_history' patient.id %}" class="btn btn-primary btn-sm w-100 mb-2">
+                    <i class="fas fa-plus"></i> Add Medical History
+                </a>
+                <!-- END OF NEW BUTTON -->
                 <a href="{% url 'doctor:create_treatment_plan' patient.id %}" class="btn btn-success btn-sm w-100 mb-2">
                     <i class="fas fa-file-medical"></i> Create Treatment Plan
                 </a>
@@ -54,12 +60,19 @@
                             <h6>{{ history.diagnosis }}</h6>
                             <p class="mb-1"><strong>Medications:</strong> {{ history.medications }}</p>
                             <p class="mb-1"><strong>Allergies:</strong> {{ history.allergies|default:"None" }}</p>
-                            <small class="text-muted">{{ history.date_recorded }}</small>
+                            <p class="mb-1"><strong>Treatment:</strong> {{ history.treatment_history }}</p>
+                            <small class="text-muted">Recorded on: {{ history.date_recorded }}</small>
+                            {% if history.recorded_by %}
+                            <br><small class="text-muted">By: Dr. {{ history.recorded_by.get_full_name }}</small>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-muted">No medical history available</p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No medical history available. 
+                        <a href="{% url 'doctor:add_medical_history' patient.id %}" class="alert-link">Add one now</a>
+                    </div>
                 {% endif %}
             </div>
             

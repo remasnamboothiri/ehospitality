@@ -1,5 +1,6 @@
 from django import forms
 from .models import Prescription, DoctorSchedule, TreatmentPlan
+from patient_module.models import MedicalHistory
 
 class PrescriptionForm(forms.ModelForm):
     class Meta:
@@ -29,3 +30,18 @@ class TreatmentPlanForm(forms.ModelForm):
             'treatment_description': forms.Textarea(attrs={'rows': 4}),
             'goals': forms.Textarea(attrs={'rows': 3}),
         }
+        
+        
+        
+
+
+class MedicalHistoryForm(forms.ModelForm):
+    class Meta:
+        model = MedicalHistory
+        fields = ['diagnosis', 'medications', 'allergies', 'treatment_history']
+        widgets = {
+            'diagnosis': forms.TextInput(attrs={'class': 'form-control'}),
+            'medications': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+            'allergies': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            'treatment_history': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
+        }       

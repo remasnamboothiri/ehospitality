@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}My Appointments{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-calendar-alt"></i> My Appointments</h2>
+<a href="{% url 'patient:book_appointment' %}" class="btn btn-primary mb-3">
+    <i class="fas fa-plus"></i> Book New Appointment
+</a>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>Dr. {{ appointment.doctor.get_full_name }}</td>
+                    <td>{{ appointment.appointment_date }}</td>
+                    <td>{{ appointment.appointment_time }}</td>
+                    <td>{{ appointment.reason|truncatewords:10 }}</td>
+                    <td><span class="badge bg-info">{{ appointment.status }}</span></td>
+                    <td>
+                        {% if appointment.status == 'scheduled' %}
+                        <a href="{% url 'patient:cancel_appointment' appointment.id %}" 
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure?')">Cancel</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No appointments found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
