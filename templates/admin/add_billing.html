@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create New Bill{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-file-invoice"></i> Create New Bill</h2>
+
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Billing Details</h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Invoice number will be generated automatically
+            </div>
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Create Bill
+            </button>
+            <a href="{% url 'hospital_admin:billing_management' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

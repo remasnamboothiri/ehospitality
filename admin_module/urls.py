@@ -1,25 +1,7 @@
-# from django.urls import path
-# from . import views
-
-# app_name = 'admin'
-
-# urlpatterns = [
-#     path('dashboard/', views.admin_dashboard, name='dashboard'),
-#     path('users/', views.user_management, name='user_management'),
-#     path('users/add/', views.add_user, name='add_user'),
-#     path('users/edit/<int:user_id>/', views.edit_user, name='edit_user'),
-#     path('users/delete/<int:user_id>/', views.delete_user, name='delete_user'),
-#     path('facilities/', views.facility_management, name='facility_management'),
-#     path('facilities/add/', views.add_facility, name='add_facility'),
-#     path('appointments/', views.appointment_management, name='appointment_management'),
-#     path('departments/', views.department_management, name='department_management'),
-# ]
-
-
 from django.urls import path
 from . import views
 
-app_name = 'admin'
+app_name = 'hospital_admin' 
 
 urlpatterns = [
     # Dashboard
@@ -50,5 +32,11 @@ urlpatterns = [
     path('departments/delete/<int:department_id>/', views.delete_department, name='delete_department'),
     
     # Reports
-    path('reports/', views.system_reports, name='system_reports'),
+    path('reports/', views.system_reports, name='system_reports'), 
+    
+    # Billing Management (ADD THESE LINES)
+    path('billing/', views.billing_management, name='billing_management'),
+    path('billing/add/', views.add_billing, name='add_billing'),
+    path('billing/edit/<int:billing_id>/', views.edit_billing, name='edit_billing'),
+    path('billing/delete/<int:billing_id>/', views.delete_billing, name='delete_billing'),
 ]

@@ -5,6 +5,8 @@ from core.models import User
 from patient_module.models import Appointment
 from .models import Facility, Department
 from .forms import UserManagementForm, FacilityForm, DepartmentForm
+from patient_module.models import Billing
+from .forms import BillingForm  # Add this to your imports at the top
 
 @login_required
 def admin_dashboard(request):
@@ -194,7 +196,7 @@ def add_facility(request):
         if form.is_valid():
             facility = form.save()
             messages.success(request, f'Facility "{facility.name}" created successfully!')
-            return redirect('admin:facility_management')
+            return redirect('hospital_admin:facility_management')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -215,7 +217,7 @@ def edit_facility(request, facility_id):
         if form.is_valid():
             updated_facility = form.save()
             messages.success(request, f'Facility "{updated_facility.name}" updated successfully!')
-            return redirect('admin:facility_management')
+            return redirect('hospital_admin:facility_management')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -240,7 +242,7 @@ def delete_facility(request, facility_id):
         facility_name = facility.name
         facility.delete()
         messages.success(request, f'Facility "{facility_name}" deleted successfully!')
-        return redirect('admin:facility_management')
+        return redirect('hospital_admin:facility_management')
     
     return render(request, 'admin/delete_facility.html', {'facility': facility})
 
@@ -315,7 +317,7 @@ def update_appointment_status(request, appointment_id):
         else:
             messages.error(request, 'Invalid status')
     
-    return redirect('admin:appointment_management')
+    return redirect('hospital_admin:appointment_management')
 
 @login_required
 def department_management(request):
@@ -360,7 +362,7 @@ def add_department(request):
         if form.is_valid():
             department = form.save()
             messages.success(request, f'Department "{department.name}" created successfully!')
-            return redirect('admin:department_management')
+            return redirect('hospital_admin:department_management')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -381,7 +383,7 @@ def edit_department(request, department_id):
         if form.is_valid():
             updated_department = form.save()
             messages.success(request, f'Department "{updated_department.name}" updated successfully!')
-            return redirect('admin:department_management')
+            return redirect('hospital_admin:department_management')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -406,7 +408,7 @@ def delete_department(request, department_id):
         department_name = department.name
         department.delete()
         messages.success(request, f'Department "{department_name}" deleted successfully!')
-        return redirect('admin:department_management')
+        return redirect('hospital_admin:department_management')
     
     return render(request, 'admin/delete_department.html', {'department': department})
 
@@ -446,3 +448,85 @@ def system_reports(request):
     }
     
     return render(request, 'admin/system_reports.html', context)
+
+
+
+
+
+
+# Billing views would go here if you have them
+@login_required
+def billing_management(request):
+    if request.user.user_type != 'admin':
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    from patient_module.models import Billing
+    billings = Billing.objects.all().select_related('patient').order_by('-created_at')
+    
+    context = {
+        'billings': billings,
+    }
+    return render(request, 'admin/billing_management.html', context)
+
+@login_required
+def add_billing(request):
+    if request.user.user_type != 'admin':
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    from admin_module.forms import BillingForm
+    if request.method == 'POST':
+        form = BillingForm(request.POST)
+        if form.is_valid():
+            billing = form.save()
+            messages.success(request, f'Billing record {billing.invoice_number} created successfully!')
+            return redirect('hospital_admin:billing_management')  # ← FIXED!
+    else:
+        form = BillingForm()
+    
+    return render(request, 'admin/add_billing.html', {'form': form})
+
+@login_required
+def edit_billing(request, billing_id):
+    if request.user.user_type != 'admin':
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    from patient_module.models import Billing
+    from admin_module.forms import BillingForm
+    
+    billing = get_object_or_404(Billing, id=billing_id)
+    
+    if request.method == 'POST':
+        form = BillingForm(request.POST, instance=billing)
+        if form.is_valid():
+            updated_billing = form.save()
+            messages.success(request, f'Billing {updated_billing.invoice_number} updated successfully!')
+            return redirect('hospital_admin:billing_management')  # ← FIXED!
+    else:
+        form = BillingForm(instance=billing)
+    
+    context = {
+        'form': form,
+        'billing': billing,
+        'editing': True,
+    }
+    return render(request, 'admin/edit_billing.html', context)
+
+@login_required
+def delete_billing(request, billing_id):
+    if request.user.user_type != 'admin':
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    from patient_module.models import Billing
+    billing = get_object_or_404(Billing, id=billing_id)
+    
+    if request.method == 'POST':
+        invoice_number = billing.invoice_number
+        billing.delete()
+        messages.success(request, f'Billing {invoice_number} deleted successfully!')
+        return redirect('hospital_admin:billing_management')  # ← FIXED!
+    
+    return render(request, 'admin/delete_billing.html', {'billing': billing})

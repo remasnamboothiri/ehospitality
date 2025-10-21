@@ -1,6 +1,3 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -8,7 +5,10 @@ from django.contrib import messages
 from .forms import UserRegistrationForm, UserLoginForm
 
 def home(request):
-    return render(request, 'home.html')
+    context = {
+        'is_home_page': True  # This tells the template it's the home page
+    }
+    return render(request, 'home.html', context)
 
 def register(request):
     if request.method == 'POST':
@@ -23,7 +23,7 @@ def register(request):
             elif user.user_type == 'doctor':
                 return redirect('doctor:dashboard')
             elif user.user_type == 'admin':
-                return redirect('admin:dashboard')
+                return redirect('hospital_admin:dashboard')  # ← FIXED
             return redirect('core:home')
     else:
         form = UserRegistrationForm()
@@ -38,12 +38,16 @@ def user_login(request):
             user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
+                
                 if user.user_type == 'patient':
+                    messages.success(request, f'Welcome {user.username}!')
                     return redirect('patient:dashboard')
                 elif user.user_type == 'doctor':
+                    messages.success(request, f'Welcome Dr. {user.username}!')
                     return redirect('doctor:dashboard')
                 elif user.user_type == 'admin':
-                    return redirect('admin:dashboard')
+                    messages.success(request, f'Welcome Admin {user.username}!')
+                    return redirect('hospital_admin:dashboard')  # ← FIXED
                 return redirect('core:home')
             else:
                 messages.error(request, 'Invalid credentials')

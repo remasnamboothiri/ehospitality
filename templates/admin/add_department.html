@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Department{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-building"></i> Add New Department</h2>
+
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Department Details</h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Create Department
+            </button>
+            <a href="{% url 'hospital_admin:department_management' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

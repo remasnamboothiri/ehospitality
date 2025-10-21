@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Department Management{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-building"></i> Department Management</h2>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{% url 'hospital_admin:add_department' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Add New Department
+        </a>
+    </div>
+    <div class="col-md-6">
+        <form method="get" class="d-flex">
+            <input type="text" name="search" class="form-control me-2" placeholder="Search departments..." value="{{ search_query }}">
+            <select name="facility" class="form-select me-2">
+                <option value="">All Facilities</option>
+                {% for facility in facilities %}
+                <option value="{{ facility.id }}" {% if facility_filter == facility.id|stringformat:"s" %}selected{% endif %}>
+                    {{ facility.name }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>Department Name</th>
+                    <th>Facility</th>
+                    <th>Head of Department</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for department in departments %}
+                <tr>
+                    <td>{{ department.name }}</td>
+                    <td>{{ department.facility.name }}</td>
+                    <td>{{ department.head_of_department|default:"Not assigned" }}</td>
+                    <td>
+                        <a href="{% url 'hospital_admin:edit_department' department.id %}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'hospital_admin:delete_department' department.id %}" class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure?')">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No departments found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
